@@ -34,3 +34,8 @@ or
 ```
 socat FILE:`tty`,raw,echo=0 TCP:150.136.171.117:1338
 ```
+
+## Acknowledgment
+
+This research was done with the help of [Yuhang Wu](https://twitter.com/wupco1996) and [Xinyu Xing](https://twitter.com/xingxinyu). Thanks [Eduardo Vela](https://twitter.com/sirdarckcat) for providing this amazing logo.
+
