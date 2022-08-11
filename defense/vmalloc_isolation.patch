@@ -1,0 +1,141 @@
+diff --git a/fs/file_table.c b/fs/file_table.c
+index 45437f8e1..90873340c 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -37,6 +37,7 @@ struct files_stat_struct files_stat = {
+ 	.max_files = NR_FILE
+ };
+ 
++#define CONFIG_CRED_ISOLATION
+ /* SLAB cache for file structures */
+ static struct kmem_cache *filp_cachep __read_mostly;
+ 
+@@ -47,7 +48,11 @@ static void file_free_rcu(struct rcu_head *head)
+ 	struct file *f = container_of(head, struct file, f_u.fu_rcuhead);
+ 
+ 	put_cred(f->f_cred);
++#ifndef CONFIG_CRED_ISOLATION
+ 	kmem_cache_free(filp_cachep, f);
++#else
++	kvfree(f);
++#endif
+ }
+ 
+ static inline void file_free(struct file *f)
+@@ -98,7 +103,17 @@ static struct file *__alloc_file(int flags, const struct cred *cred)
+ 	struct file *f;
+ 	int error;
+ 
++#ifndef CONFIG_CRED_ISOLATION
+ 	f = kmem_cache_zalloc(filp_cachep, GFP_KERNEL);
++#else
++	if (OPEN_FMODE(flags) & FMODE_WRITE) {
++		f = vzalloc(sizeof(struct file));
++		// printk("allocing file using vmalloc at %llx\n", f);
++	} else {
++		f = kmem_cache_zalloc(filp_cachep, GFP_KERNEL);
++		// printk("allocing file using kmalloc at %llx\n", f);
++	}
++#endif
+ 	if (unlikely(!f))
+ 		return ERR_PTR(-ENOMEM);
+ 
+diff --git a/kernel/cred.c b/kernel/cred.c
+index 933155c96..5aaf50bba 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -30,6 +30,7 @@ do {									\
+ } while (0)
+ #endif
+ 
++#define CONFIG_CRED_ISOLATION
+ static struct kmem_cache *cred_jar;
+ 
+ /* init to 2 - one for init_task, one to ensure it is never freed */
+@@ -88,6 +89,22 @@ static inline void alter_cred_subscribers(const struct cred *_cred, int n)
+ #endif
+ }
+ 
++#ifdef CONFIG_CRED_ISOLATION
++static inline struct cred *alloc_isolated_cred(const struct cred *old) {
++	struct cred *new;
++
++	// check old
++	if (old->uid.val == 0) {
++		new = vzalloc(sizeof(struct cred));
++		// printk("allocating cred using vmalloc at %llx\n", new);
++	} else {
++		new = kmem_cache_alloc(cred_jar, GFP_KERNEL);
++		// printk("allocating cred using kmalloc at %llx\n", new);
++	}
++	return new;
++}
++#endif
++
+ /*
+  * The RCU callback to actually dispose of a set of credentials
+  */
+@@ -123,7 +140,11 @@ static void put_cred_rcu(struct rcu_head *rcu)
+ 	if (cred->ucounts)
+ 		put_ucounts(cred->ucounts);
+ 	put_user_ns(cred->user_ns);
++#ifdef CONFIG_CRED_ISOLATION
++	kvfree(cred);
++#else
+ 	kmem_cache_free(cred_jar, cred);
++#endif
+ }
+ 
+ /**
+@@ -217,7 +238,11 @@ struct cred *cred_alloc_blank(void)
+ {
+ 	struct cred *new;
+ 
++#ifdef CONFIG_CRED_ISOLATION
++	new = alloc_isolated_cred(current_cred());
++#else
+ 	new = kmem_cache_zalloc(cred_jar, GFP_KERNEL);
++#endif
+ 	if (!new)
+ 		return NULL;
+ 
+@@ -257,7 +282,11 @@ struct cred *prepare_creds(void)
+ 
+ 	validate_process_creds();
+ 
++#ifndef CONFIG_CRED_ISOLATION
+ 	new = kmem_cache_alloc(cred_jar, GFP_KERNEL);
++#else
++	new = alloc_isolated_cred(task->cred);
++#endif
+ 	if (!new)
+ 		return NULL;
+ 
+@@ -714,11 +743,13 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
+ 	const struct cred *old;
+ 	struct cred *new;
+ 
++#ifndef CONFIG_CRED_ISOLATION
+ 	new = kmem_cache_alloc(cred_jar, GFP_KERNEL);
+ 	if (!new)
+ 		return NULL;
+ 
+ 	kdebug("prepare_kernel_cred() alloc %p", new);
++#endif
+ 
+ 	if (daemon)
+ 		old = get_task_cred(daemon);
+@@ -727,6 +758,13 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
+ 
+ 	validate_creds(old);
+ 
++#ifdef CONFIG_CRED_ISOLATION
++	new = alloc_isolated_cred(old);
++	if (!new) {
++		put_cred(old);
++		return NULL;
++	}
++#endif
+ 	*new = *old;
+ 	new->non_rcu = 0;
+ 	atomic_set(&new->usage, 1);
