@@ -1,13 +1,33 @@
 # DirtyCred
 
+DirtyCred is a kernel exploitation concept that swaps unprivileged [kernel credentials](https://www.kernel.org/doc/Documentation/security/credentials.txt) with privileged ones to escalate privilege. Instead of overwriting any critical data fields on kernel heap, DirtyCred abuses the heap memory reuse mechanism to get privileged. Although the concept is simple, it is effective.
+
 ![](./img/DirtyCred.png)
 
+## Exploitation effects
 
+**Data-only**: no need to bypass KASLR or leak kernel heap
+
+**Universal**: the exploits written would work across different kernels and architectures.
+
+**Effective**: bypass all the available exploit mitigation in upstream kernel.
 
 ## Demo
 [CVE-2021-4154](https://github.com/Markakd/CVE-2021-4154)
 
-[CVE-2022-2588](https://github.com/Markakd/CVE-2022-2588) and some others to be coming...
+[CVE-2022-2588](https://github.com/Markakd/CVE-2022-2588)
+
+some others to be coming...
+
+## Defense
+
+See the code [here](./defense).
+
+
+## Publication
+
+[Blackhat USA 2022](https://zplin.me/papers/DirtyCred-Zhenpeng.pdf)
+
 
 ## Online Resource
 
