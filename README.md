@@ -8,7 +8,7 @@ DirtyCred is a kernel exploitation concept that swaps unprivileged [kernel crede
 
 **Data-only**: no need to bypass KASLR or leak kernel heap
 
-**Universal**: the exploits written would work across different kernels and architectures.
+**Universal**: the exploits written with DirtyCred would work across different kernels and architectures.
 
 **Effective**: bypass all the available exploit mitigation in upstream kernel.
 
