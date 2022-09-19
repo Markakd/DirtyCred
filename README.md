@@ -39,12 +39,12 @@ We provide two VMs for testing [CVE-2022-2588](https://github.com/Markakd/CVE-20
 
 **Ubuntu 20**
 ```
-socat FILE:`tty`,raw,echo=0 TCP:150.136.171.117:1337
+nc 150.136.171.117 1337
 ```
 
 **Centos 8**
 ```
-socat FILE:`tty`,raw,echo=0 TCP:150.136.171.117:1338
+nc 150.136.171.117 1338
 ```
 
 ## Acknowledgment
