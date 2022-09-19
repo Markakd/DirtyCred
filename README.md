@@ -8,7 +8,7 @@ DirtyCred is a kernel exploitation concept that swaps unprivileged [kernel crede
 
 **Data-only**: no need to bypass KASLR or leak kernel heap
 
-**Universal**: the exploits written would work across different kernels and architectures.
+**Universal**: the exploits written with DirtyCred would work across different kernels and architectures.
 
 **Effective**: bypass all the available exploit mitigation in upstream kernel.
 
@@ -31,7 +31,7 @@ See the code [here](./defense).
 
 ## Online Resource
 
-We provide two VMs for testing [CVE-2022-2588](https://github.com/Markakd/CVE-2022-2588). Each connection to the VM has 10 minitues timeout (i.e. the VM will be shutdown after being connected for 10 minitues). Each connection will get a fresh VM, everything stored before will be reset. When accessing the VM, please login the system with `low` user whose password is `low`. Please compile the exploit code then launch the attack.
+We provide two VMs for testing [CVE-2022-2588](https://github.com/Markakd/CVE-2022-2588). Each connection to the VM has 10 minutes timeout (i.e. the VM will be shutdown after being connected for 10 minutes). Each connection will get a fresh VM, everything stored before will be reset. When accessing the VM, please login the system with `low` user whose password is `low`. Please compile the exploit code then launch the attack.
 
 ### How to connect to VMs
 
