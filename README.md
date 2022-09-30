@@ -17,7 +17,7 @@ DirtyCred is a kernel exploitation concept that swaps unprivileged [kernel crede
 
 [CVE-2022-2588](https://github.com/Markakd/CVE-2022-2588)
 
-some others to be coming...
+CVE-2022-20409 (coming soon)
 
 ## Defense
 
