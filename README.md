@@ -1,8 +1,13 @@
-# DirtyCred
+# DirtyCred: Escalating Privilege in Linux Kernel
+
+
+<p>
+<a href="papers/icse23.pdf"> <img title="" src="img/DirtyCred.png" alt="loading-ag-167" align="right" width="400"></a>
 
 DirtyCred is a kernel exploitation concept that swaps unprivileged [kernel credentials](https://www.kernel.org/doc/Documentation/security/credentials.txt) with privileged ones to escalate privilege. Instead of overwriting any critical data fields on kernel heap, DirtyCred abuses the heap memory reuse mechanism to get privileged. Although the concept is simple, it is effective. See the [Blackhat presentation](https://zplin.me/papers/DirtyCred-Zhenpeng.pdf) or [CCS paper](https://zplin.me/papers/DirtyCred.pdf) for more details.
 
-![](./img/DirtyCred.png)
+</p>
+
 
 ## Exploitation effects
 
@@ -28,6 +33,17 @@ See the code [here](./defense).
 [Blackhat USA 2022](https://zplin.me/papers/DirtyCred-Zhenpeng.pdf)
 
 [CCS 2022](https://zplin.me/papers/DirtyCred.pdf)
+
+## Citation
+```
+@inproceedings{lin2022dirtycred,
+  title={DirtyCred: Escalating Privilege in Linux Kernel},
+  author={Lin, Zhenpeng and Wu, Yuhang and Xing, Xinyu},
+  booktitle={Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security},
+  pages={1963--1976},
+  year={2022}
+}
+```
 
 ## Online Resource
 
