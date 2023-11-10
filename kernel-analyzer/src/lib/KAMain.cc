@@ -110,7 +110,7 @@ void doBasicInitialization(Module *M) {
   // collect global object definitions
   for (GlobalVariable &G : M->globals()) {
     if (G.hasExternalLinkage())
-      GlobalCtx.Gobjs[G.getName()] = &G;
+      GlobalCtx.Gobjs[G.getName().str()] = &G;
   }
 
   // collect global function definitions

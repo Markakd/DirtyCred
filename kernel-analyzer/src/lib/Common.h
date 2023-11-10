@@ -38,7 +38,7 @@ extern cl::opt<unsigned> VerboseLevel;
   do {                                                                         \
     if (VerboseLevel >= lv && I) {                                             \
       if (DILocation *Loc = I->getDebugLoc()) {                                \
-        string file = Loc->getFilename();                                      \
+        string file = Loc->getFilename().str();                                \
         unsigned line = Loc->getLine();                                        \
         errs() << file << ":" << line << "\n";                                 \
       }                                                                        \
