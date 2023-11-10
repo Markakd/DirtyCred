@@ -421,7 +421,7 @@ std::string getAnonStructId(Value *V, Module *M, StringRef Prefix) {
     break;
   }
 
-  return Prefix;
+  return Prefix.str();
 }
 
 std::string getAnnotation(Value *V, Module *M) {
